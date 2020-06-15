@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="./libs/bootstrap/css/bootstrap.min.css" />
   <!-- 引入jq文件 -->
   <script src="./libs/jquery-1.12.4.min.js"></script>
+  <script src="./libs/http.js"></script>
   <!-- 引入bootstrap的js文件 -->
   <script src="./libs/bootstrap/js/bootstrap.min.js"></script>
 </head>
@@ -38,6 +39,115 @@
     </div>
   </div>
 
+  <!--bootstrap 模态框 -->
+  <div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">提示</h4>
+        </div>
+        <div class="modal-body">
+          <p>One fine body&hellip;</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+          <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+  <script>
+    /* 需求
+      1、为登陆按钮设置点击事件（阻止默认跳转）
+      2、获取用户名和密码（非空判断）
+      3、发送请求
+     */
+
+    $(function () {
+      // $('.input_sub').on('click', function (e) {
+      //   e.preventDefault();
+      //   var username = $('.input_txt').val().trim();
+      //   var password = $('.input_pass').val().trim();
+      //   if (username == '' || password == '') {
+      //     // alert('用户名和密码不能为空！')
+      //     //修改提示框的内容
+      //     $('#myModal p').text('用户名和密码不能为空！')
+      //     //调用这个方法，显示提示框
+      //     $('#myModal').modal()
+      //     return;
+      //   }
+      // $.ajax({
+      //   type: 'post',
+      //   url: 'http://localhost:8080/api/v1/admin/user/login',
+      //   data: {
+      //     username: username,
+      //     password: password
+      //   },
+      //   success: function (backData) {
+      //     if (backData.code == 200) {
+      //       // alert(backData.msg);
+      //       $('#myModal p').text(backData.msg);
+      //       $('#myModal').modal();
+      //       $('#myModal').on('hidden.bs.modal', function (e) {
+      //         //将返回的token存储到本地
+      //         localStorage.setItem('token',backData.token)
+      //         // 跳转
+      //         window.location.href = './index.html'
+      //       })
+      //     } else {
+      //       // alert(backData.msg)
+      //       $('#myModal p').text(backData.msg)
+      //       $('#myModal').modal()
+      //     }
+      //   }
+
+      // })
+
+      //})
+      $(".input_sub").on('click', function (e) {
+        //1阻止页面跳转
+        e.preventDefault();
+        // 获取用户名和密码
+        var username = $('.input_txt').val().trim();
+        var password = $('.input_pass').val().trim();
+        //非空判断
+        if (username == '' || password == '') {
+          // alert('用户名和密码不能为空')
+          $('#myModal p').text('用户名和密码不能为空！')
+          //调用这个方法，显示提示框
+          $('#myModal').modal()
+          return;
+        }
+        $.ajax({
+          type: 'post',
+          url: BigNews.user_login,
+          data: {
+            username: username,
+            password: password
+          },
+          success: function (backData) {
+            // alert(backData.msg)
+            $('#myModal p').text(backData.msg)
+            //调用这个方法，显示提示框
+            $('#myModal').modal()
+            if (backData.code == 200) {
+              //存储token
+              $('#myModal').on('hidden.bs.modal', function (e) {
+                localStorage.setItem('token', backData.token)
+                window.location.href = './index.html'
+              })
+            }
+          }
+        })
+      })
+
+    });
+
+
+  </script>
 </body>
 
 </html>
